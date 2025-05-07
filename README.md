@@ -2,7 +2,7 @@
 # Smart Attendance Tracker
 
 ## Overview
-This project is a **JavaFX-based desktop application** that tracks student attendance using a code-based entry system. It includes **teacher and student interfaces**, backed by an Oracle 21c database. Teachers can monitor daily and weekly attendance summaries with expandable views for duplicated student records.
+This project is a **JavaFX-based application** that tracks student attendance using a code-based entry system. It includes **teacher and student interfaces**, backed by an Oracle 21c database. Teachers can monitor daily and weekly attendance summaries.
 
 ---
 
@@ -12,23 +12,23 @@ This project is a **JavaFX-based desktop application** that tracks student atten
 - **Daily and weekly summaries** with expandable rows for repeated entries
 - **Date-based filtering** and CSV export
 - Automatically groups weekly attendance based on a fixed reference date
-- Full UI built with **JavaFX**, styled via CSS
+- Full UI built with **JavaFX**
 - **Database integration** with Oracle using JDBC
 
 ---
 
-## Modules and Classes
+## Classes
 
 ### 1. `AttendanceApp.java`
 - Main app class for student-side attendance submission
-- Allows students to input **ID** and **code**
+- Allows students to input **ID** and **Password** and **code**
 - Sends data to the Oracle database
 
 ### 2. `TeachersApp.java`
 - Teacher dashboard UI
 - Displays:
-  - Daily attendance (flat view)
-  - Weekly attendance (grouped by week and student, expandable)
+  - Daily attendance
+  - Weekly attendance
 - Features:
   - **Expandable rows** for duplicate entries
   - **Date filters**
@@ -45,12 +45,17 @@ This project is a **JavaFX-based desktop application** that tracks student atten
   - `getAttendanceRecordsBetween()`
   - `getAllAttendanceRecords()`
 
-### 4. `AttendanceRecord.java`
-- Represents a single attendance entry
-- Attributes:
-  - `studentId`
-  - `timestamp`
-  - `code`
+### 4. `AttendanceServer.java `
+- Receives data and processes it
+- ensuring that when students log in, that thier wifi IP address same as the lecture place
+
+### 5. `AttendanceClient.java`
+- Sends attendance data from student to server
+
+
+### 6. `AttendanceLogger.java`
+- Handles writing attendance logs to a file
+
 
 ---
 
@@ -58,14 +63,14 @@ This project is a **JavaFX-based desktop application** that tracks student atten
 
 ### 1. Student Flow
 - Students launch `AttendanceApp`
-- Enter student ID and code
-- Code is submitted and saved in the database with a timestamp
+- Enter student ID and password and code for attendance
+- studnets marked as attended whether the credentials match in the database 
 
 ### 2. Teacher Flow
 - Teachers log in via `TeachersApp`
 - Can view attendance in two modes:
-  - **Daily Summary** (flat list)
-  - **Weekly Summary** (grouped by week and student, expandable)
+  - **Daily Summary** 
+  - **Weekly Summary**
 - Apply date filters or export data as CSV
 
 ---
@@ -75,10 +80,11 @@ This project is a **JavaFX-based desktop application** that tracks student atten
 ### Student Entry
 ```
 Student ID: 2211974
+Password: 123456
 Code: ZY1JRO
 ```
 
-### Teacher View (Weekly)
+### Teacher View (Weekly Summary)
 ```
 > Week 3
     2211974   | 2025-05-07 | 20:05:45 | ZY1JRO
@@ -88,23 +94,13 @@ Code: ZY1JRO
 ---
 
 ## How to Run
+1. Run **AttendanceServer.java** 
+2. Then run  **AttendanceApp.java**  or **TeachersApp.java** depending on the role.
 
 ### Prerequisites
-- Oracle 21c database installed and running
+- Oracle 21c database installed with tables 
 - JavaFX SDK (21+) properly configured
 
-### Steps
-
-1. Import the project into your IDE
-2. Update Oracle DB credentials in `DatabaseManager.java`:
-   ```java
-   private static final String URL = "jdbc:oracle:thin:@localhost:1521/attendancepdb1";
-   private static final String USER = "your_user";
-   private static final String PASSWORD = "your_password";
-   ```
-3. Compile and run:
-   - For student UI: `AttendanceApp.java`
-   - For teacher UI: `TeachersApp.java`
 
 ---
 
@@ -114,22 +110,7 @@ Code: ZY1JRO
   ```java
   LocalDate base = LocalDate.of(2025, 4, 23);
   ```
-- **UI Theme**: Modify `styles.css` for custom look
+- **UI Theme**: Modify `TeachersApp.java` or `AttendanceApp.java` for custom look
 - **Database**: You can switch to MySQL or another DB by adjusting `DatabaseManager.java`
 
----
-
-## Limitations
-- No real-time validation of code correctness
-- Student interface does not show success/failure confirmation on submission
-- No admin control panel for user management (only DB-level inserts for now)
-
----
-
-## Future Improvements
-- Add student-side history view
-- Use hashed password authentication
-- Add real-time attendance validation rules
-- Integrate email notifications
-
----
+  
